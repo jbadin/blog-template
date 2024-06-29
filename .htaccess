@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /
+#added to prevent rewrite loop and to load files in node_modules folder
+RewriteCond %{REQUEST_URI} !^/node_modules/.*$
+RewriteCond %{REQUEST_URI} !^/assets/.*$
+RewriteRule ^(.*)$ index.php [QSA,L]
