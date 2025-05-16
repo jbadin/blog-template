@@ -87,34 +87,34 @@ class Account extends BaseController
         require_once 'views/parts/footer.php';
     }
 
-    public function activate()
-    {
-        if (!empty($_GET['key'])) {
-            $key = $this->cleanData($_GET['key']);
-            if (!preg_match($this->regex['activationKey'], $key)) {
-                $errors['activationKey'] = $this->errors['activationKey']['invalid'];
-            } else {
-                $user = new Users();
-                $user->activationKey = $key;
-                try {
-                    if ($user->activationKeyExists()) {
-                        $user->activate();
-                        $success = true;
-                    } else {
-                        $errors['activationKey'] = $this->errors['activationKey']['invalid'];
-                    }
-                } catch (\Exception $e) {
-                    $errors['activationKey'] = 'An error occured while activating your account. Please try again later.';
-                }
-            }
-        } else {
-            $errors['activationKey'] = $this->errors['activationKey']['required'];
-        }
+    // public function activate()
+    // {
+    //     if (!empty($_GET['key'])) {
+    //         $key = $this->cleanData($_GET['key']);
+    //         if (!preg_match($this->regex['activationKey'], $key)) {
+    //             $errors['activationKey'] = $this->errors['activationKey']['invalid'];
+    //         } else {
+    //             $user = new Users();
+    //             $user->activationKey = $key;
+    //             try {
+    //                 if ($user->activationKeyExists()) {
+    //                     $user->activate();
+    //                     $success = true;
+    //                 } else {
+    //                     $errors['activationKey'] = $this->errors['activationKey']['invalid'];
+    //                 }
+    //             } catch (\Exception $e) {
+    //                 $errors['activationKey'] = 'An error occured while activating your account. Please try again later.';
+    //             }
+    //         }
+    //     } else {
+    //         $errors['activationKey'] = $this->errors['activationKey']['required'];
+    //     }
 
-        require_once 'views/parts/header.php';
-        require_once 'views/account/activate.php';
-        require_once 'views/parts/footer.php';
-    }
+    //     require_once 'views/parts/header.php';
+    //     require_once 'views/account/activate.php';
+    //     require_once 'views/parts/footer.php';
+    // }
 
     private function generateActivationKey()
     {
@@ -202,7 +202,7 @@ class Account extends BaseController
                         $errors['username'] = $this->errors['username']['exists'];
                     }
                 } catch (\Exception $e) {
-                    $errors['username'] = $this->errors['global'];;
+                    $errors['username'] = $this->errors['global'];
                 }
             } else {
                 $errors['username'] = $this->errors['username']['required'];
@@ -244,7 +244,7 @@ class Account extends BaseController
                         $errors['email'] = $this->errors['email']['exists'];
                     }
                 } catch (\Exception $e) {
-                    $errors['email'] = $this->errors['global'];;
+                    $errors['email'] = $this->errors['global'];
                 }
             } else {
                 $errors['email'] = $this->errors['email']['required'];

@@ -13,6 +13,7 @@ class Users extends BaseModel {
     public string $registrationDate;
     public string $activationKey;
     public string $activationDate;
+    public int $is_author;
     public int $id_usersroles;
 
     public function __construct() {
@@ -21,21 +22,21 @@ class Users extends BaseModel {
 
     //Exists methods
 
-    /**
-     * Check if the activation key exists in the database
-     * @param string $activationKey
-     * @return bool
-     */
-    public function activationKeyExists(){
-        $sql = 'SELECT COUNT(*) FROM ' . $this->prefix . 'users WHERE activationKey = :activationKey';
-        $req = $this->pdo->prepare($sql);
-        $req->bindValue(':activationKey', $this->activationKey, PDO::PARAM_STR);
-        if($req->execute()) {
-            return $req->fetchColumn();
-        } else {
-            return false;
-        }
-    }
+    // /**
+    //  * Check if the activation key exists in the database
+    //  * @param string $activationKey
+    //  * @return bool
+    //  */
+    // public function activationKeyExists(){
+    //     $sql = 'SELECT COUNT(*) FROM ' . $this->prefix . 'users WHERE activationKey = :activationKey';
+    //     $req = $this->pdo->prepare($sql);
+    //     $req->bindValue(':activationKey', $this->activationKey, PDO::PARAM_STR);
+    //     if($req->execute()) {
+    //         return $req->fetchColumn();
+    //     } else {
+    //         return false;
+    //     }
+    // }
     
     /**
      * Check if the email exists in the database
@@ -69,19 +70,19 @@ class Users extends BaseModel {
         }
     }
 
-    //Other methods
+    // //Other methods
 
-    /**
-     * Activate the user account
-     * @param string $activationKey
-     * @return bool
-     */
-    public function activate() {
-        $sql = 'UPDATE ' . $this->prefix . 'users SET activationDate = NOW() WHERE activationKey = :activationKey';
-        $req = $this->pdo->prepare($sql);
-        $req->bindValue(':activationKey', $this->activationKey, PDO::PARAM_STR);
-        return $req->execute();
-    }
+    // /**
+    //  * Activate the user account
+    //  * @param string $activationKey
+    //  * @return bool
+    //  */
+    // public function activate() {
+    //     $sql = 'UPDATE ' . $this->prefix . 'users SET activationDate = NOW() WHERE activationKey = :activationKey';
+    //     $req = $this->pdo->prepare($sql);
+    //     $req->bindValue(':activationKey', $this->activationKey, PDO::PARAM_STR);
+    //     return $req->execute();
+    // }
 
     /**
      * Create a new user in the database
@@ -91,11 +92,10 @@ class Users extends BaseModel {
      * @param string $email
      * @param string $password
      * @param string $locationName
-     * @param string $activationKey
      * @return bool
      */
     public function create() {
-        $sql = 'INSERT INTO  ' . $this->prefix . 'users (username, firstname, lastname, email, password, locationName, registrationDate, activationKey, activated, activationDate, id_usersroles) VALUES (:username, :firstname, :lastname, :email, :password, :locationName, NOW(), :activationKey, 0, NULL, 1);';
+        $sql = 'INSERT INTO  ' . $this->prefix . 'users (username, firstname, lastname, email, password, locationName, registrationDate, is_author, id_usersroles) VALUES (:username, :firstname, :lastname, :email, :password, :locationName, NOW(), 0, 1);';
         $req = $this->pdo->prepare($sql);
         $req->bindValue(':username', $this->username, PDO::PARAM_STR);
         $req->bindValue(':firstname', $this->firstname, PDO::PARAM_STR);
@@ -103,7 +103,6 @@ class Users extends BaseModel {
         $req->bindValue(':email', $this->email, PDO::PARAM_STR);
         $req->bindValue(':password', $this->password, PDO::PARAM_STR);
         $req->bindValue(':locationName', $this->locationName, PDO::PARAM_STR);
-        $req->bindValue(':activationKey', $this->activationKey, PDO::PARAM_STR);
         return $req->execute();
     }
 
@@ -112,7 +111,7 @@ class Users extends BaseModel {
      * @return bool
      */
     public function get() {
-        $sql = 'SELECT id, username, firstname, lastname, email, locationName, registrationDate, activationDate, id_usersroles FROM ' . $this->prefix . 'users WHERE id = :id';
+        $sql = 'SELECT id, username, firstname, lastname, email, locationName, registrationDate, is_author, id_usersroles FROM ' . $this->prefix . 'users WHERE id = :id';
         $req = $this->pdo->prepare($sql);
         $req->bindValue(':id', $this->id, PDO::PARAM_INT);
         if($req->execute()) {
@@ -123,6 +122,7 @@ class Users extends BaseModel {
             $this->email = $result->email;
             $this->locationName = $result->locationName;
             $this->registrationDate = $result->registrationDate;
+            $this->is_author = $result->is_author;
             $this->id_usersroles = $result->id_usersroles;
             return true;
         } else {
@@ -147,7 +147,7 @@ class Users extends BaseModel {
     }
 
     public function login() {
-        $sql = 'SELECT id, username, id_usersroles FROM ' . $this->prefix . 'users WHERE email = :email';
+        $sql = 'SELECT id, username, is_author, id_usersroles FROM ' . $this->prefix . 'users WHERE email = :email';
         $req = $this->pdo->prepare($sql);
         $req->bindValue(':email', $this->email, PDO::PARAM_STR);
         if($req->execute()) {
@@ -156,6 +156,4 @@ class Users extends BaseModel {
             return false;
         }
     }
-
-
 }

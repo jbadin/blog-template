@@ -9,7 +9,7 @@
                 <p><strong>Category: </strong><?= $post->category ?></p>
                 <p><strong>Publication Date: </strong><?= $post->publicationDate ?></p>
                 <p>
-                    <?= $post->content ?>
+                    <?= htmlspecialchars_decode($post->content) ?>
                 </p>
             </div>
         </div>
